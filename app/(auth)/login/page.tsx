@@ -26,11 +26,11 @@ export default function LoginPage() {
     if (normalizedEmail.includes("admin")) {
       router.push("/admin/dashboard");
     } else if (
-      normalizedEmail.includes("manager") ||
-      normalizedEmail.includes("sara") ||
-      normalizedEmail.includes("omar")
+      normalizedEmail.includes("employee") ||
+      normalizedEmail.includes("layla") ||
+      normalizedEmail.includes("tariq")
     ) {
-      router.push("/manager/dashboard");
+      router.push("/employee/dashboard");
     } else {
       router.push("/portal/dashboard");
     }
@@ -80,16 +80,16 @@ export default function LoginPage() {
             type="button"
             onClick={() =>
               setDemoCredentials(
-                "sara.ahmed@aleefcrm.com",
-                "manager123",
-                "/manager/dashboard"
+                "layla.khalid@aleefcrm.com",
+                "employee123",
+                "/employee/dashboard"
               )
             }
-            className="flex flex-col items-center justify-center rounded-lg border border-sky-500/20 bg-sky-900/30 p-2 text-center text-sky-100 hover:bg-sky-700/50 hover:border-sky-400 transition-all focus:outline-none focus:ring-2 focus:ring-sky-400"
+            className="flex flex-col items-center justify-center rounded-lg border border-indigo-500/20 bg-indigo-900/30 p-2 text-center text-indigo-100 hover:bg-indigo-700/50 hover:border-indigo-400 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
-            <Briefcase className="h-4 w-4 text-sky-400 mb-1" />
-            <span className="font-bold text-[11px]">Manager</span>
-            <span className="text-[9px] text-sky-300/80">sara.ahmed@aleefcrm.com</span>
+            <Briefcase className="h-4 w-4 text-indigo-400 mb-1" />
+            <span className="font-bold text-[11px]">Employee</span>
+            <span className="text-[9px] text-indigo-300/80">layla.khalid@aleefcrm.com</span>
           </button>
 
           <button

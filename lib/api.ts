@@ -11,7 +11,7 @@ import { createClient } from "./supabase/client";
 
 /* ─── TypeScript Types ──────────────────────────────────────────────────────── */
 
-export type UserRole = "admin" | "manager" | "client";
+export type UserRole = "admin" | "manager" | "employee" | "client";
 export type UserStatus = "active" | "inactive" | "suspended";
 export type EmploymentStatus = "active" | "on_leave" | "terminated" | "resigned";
 export type ClientStatus = "lead" | "prospect" | "active" | "on_hold" | "completed" | "lost";
@@ -22,6 +22,42 @@ export type TaskPriority = "low" | "medium" | "high" | "urgent";
 export type TaskStatus = "todo" | "in_progress" | "review" | "completed";
 export type AttendanceStatus = "present" | "late" | "half_day" | "absent" | "wfh" | "leave";
 export type LeaveStatus = "pending" | "approved" | "rejected";
+
+export interface WorkDeliverable {
+  id: string;
+  client_id: string;
+  project_id?: string;
+  task_id?: string;
+  uploaded_by: string;
+  title: string;
+  category: "design" | "source_code" | "documentation" | "report" | "asset" | "presentation";
+  file_name: string;
+  file_size: string;
+  file_url: string;
+  version: string;
+  notes?: string;
+  status: "pending_review" | "approved" | "changes_requested";
+  created_at: string;
+  updated_at: string;
+  client?: Client;
+  task?: Task;
+  uploader?: User;
+}
+
+export interface WorkScheduleItem {
+  id: string;
+  employee_id: string;
+  user_id: string;
+  title: string;
+  type: "shift" | "client_meeting" | "task_deadline" | "focus_time" | "review";
+  start_time: string;
+  end_time: string;
+  client_id?: string;
+  task_id?: string;
+  notes?: string;
+  is_completed?: boolean;
+  client?: Client;
+}
 
 export interface User {
   id: string;
@@ -297,7 +333,7 @@ const INITIAL_USERS: User[] = [
   {
     id: "u-emp-1",
     email: "layla.khalid@aleefcrm.com",
-    role: "client",
+    role: "employee",
     full_name: "Layla Khalid",
     avatar_url: "",
     status: "active",
@@ -307,7 +343,7 @@ const INITIAL_USERS: User[] = [
   {
     id: "u-emp-2",
     email: "tariq.aziz@aleefcrm.com",
-    role: "client",
+    role: "employee",
     full_name: "Tariq Aziz",
     avatar_url: "",
     status: "active",
@@ -1057,6 +1093,157 @@ const INITIAL_WORKFLOW_SETTINGS: WorkflowSettings = {
   ],
 };
 
+const INITIAL_DELIVERABLES: WorkDeliverable[] = [
+  {
+    id: "deliv-1",
+    client_id: "c-1",
+    project_id: "p-1",
+    task_id: "t-1",
+    uploaded_by: "u-emp-2",
+    title: "Kafka Telemetry Consumer v1.2",
+    category: "source_code",
+    file_name: "kafka-telemetry-service-v1.2.zip",
+    file_size: "14.8 MB",
+    file_url: "#",
+    version: "v1.2.0",
+    notes: "Implemented geohash indexing and duplicate packet drop filters.",
+    status: "approved",
+    created_at: "2026-09-05T14:30:00Z",
+    updated_at: "2026-09-06T10:00:00Z",
+    client: INITIAL_CLIENTS[0],
+    task: INITIAL_TASKS[0],
+    uploader: INITIAL_USERS[4],
+  },
+  {
+    id: "deliv-2",
+    client_id: "c-1",
+    project_id: "p-1",
+    task_id: "t-5",
+    uploaded_by: "u-emp-1",
+    title: "iOS Safari Clustering Fix Benchmark Report",
+    category: "report",
+    file_name: "Safari-Rendering-Benchmarks.pdf",
+    file_size: "3.4 MB",
+    file_url: "#",
+    version: "v1.0.0",
+    notes: "Detailed FPS before/after throttling map render triggers.",
+    status: "approved",
+    created_at: "2026-09-04T16:00:00Z",
+    updated_at: "2026-09-04T16:00:00Z",
+    client: INITIAL_CLIENTS[0],
+    task: INITIAL_TASKS[4],
+    uploader: INITIAL_USERS[3],
+  },
+  {
+    id: "deliv-3",
+    client_id: "c-2",
+    project_id: "p-2",
+    task_id: "t-3",
+    uploaded_by: "u-emp-2",
+    title: "HL7 FHIR Schema Validation Tests & Spec",
+    category: "documentation",
+    file_name: "FHIR-Validation-Specification.pdf",
+    file_size: "5.1 MB",
+    file_url: "#",
+    version: "v0.9.0",
+    notes: "Draft specs ready for client technical team review.",
+    status: "pending_review",
+    created_at: "2026-09-07T11:00:00Z",
+    updated_at: "2026-09-07T11:00:00Z",
+    client: INITIAL_CLIENTS[1],
+    task: INITIAL_TASKS[2],
+    uploader: INITIAL_USERS[4],
+  },
+  {
+    id: "deliv-4",
+    client_id: "c-1",
+    project_id: "p-4",
+    uploaded_by: "u-emp-1",
+    title: "Client Onboarding & Training Manual",
+    category: "presentation",
+    file_name: "Apex-Fleet-Onboarding-Slides.pptx",
+    file_size: "18.2 MB",
+    file_url: "#",
+    version: "v2.0.0",
+    notes: "Updated with the new live telemetry dispatch walkthrough.",
+    status: "pending_review",
+    created_at: "2026-09-08T09:15:00Z",
+    updated_at: "2026-09-08T09:15:00Z",
+    client: INITIAL_CLIENTS[0],
+    uploader: INITIAL_USERS[3],
+  },
+];
+
+const INITIAL_WORK_SCHEDULES: WorkScheduleItem[] = [
+  {
+    id: "sched-1",
+    employee_id: "emp-5",
+    user_id: "u-emp-2",
+    title: "Standard Working Shift (09:00 - 18:00)",
+    type: "shift",
+    start_time: "2026-09-23T09:00:00",
+    end_time: "2026-09-23T18:00:00",
+    notes: "Core engineering working hours.",
+  },
+  {
+    id: "sched-2",
+    employee_id: "emp-5",
+    user_id: "u-emp-2",
+    title: "Apex Logistics Tech Sync",
+    type: "client_meeting",
+    start_time: "2026-09-23T10:30:00",
+    end_time: "2026-09-23T11:30:00",
+    client_id: "c-1",
+    notes: "Review telemetry consumer deployment and API latency.",
+    client: INITIAL_CLIENTS[0],
+  },
+  {
+    id: "sched-3",
+    employee_id: "emp-5",
+    user_id: "u-emp-2",
+    title: "Deep Work: FHIR Schema Verification",
+    type: "focus_time",
+    start_time: "2026-09-23T13:30:00",
+    end_time: "2026-09-23T16:00:00",
+    task_id: "t-3",
+    notes: "Complete unit tests for HL7 FHIR payload generator.",
+  },
+  {
+    id: "sched-4",
+    employee_id: "emp-4",
+    user_id: "u-emp-1",
+    title: "Standard Working Shift (09:00 - 18:00)",
+    type: "shift",
+    start_time: "2026-09-23T09:00:00",
+    end_time: "2026-09-23T18:00:00",
+    notes: "Customer Success coverage shift.",
+  },
+  {
+    id: "sched-5",
+    employee_id: "emp-4",
+    user_id: "u-emp-1",
+    title: "Apex Fleet Onboarding Review",
+    type: "client_meeting",
+    start_time: "2026-09-23T11:00:00",
+    end_time: "2026-09-23T12:00:00",
+    client_id: "c-1",
+    notes: "Walkthrough onboarding slides with Farid Al-Zahrani.",
+    client: INITIAL_CLIENTS[0],
+  },
+  {
+    id: "sched-6",
+    employee_id: "emp-4",
+    user_id: "u-emp-1",
+    title: "Deliverable Review & Client Sign-off",
+    type: "review",
+    start_time: "2026-09-23T15:00:00",
+    end_time: "2026-09-23T16:30:00",
+    client_id: "c-1",
+    notes: "Verify approval status of recent task submissions.",
+    client: INITIAL_CLIENTS[0],
+  },
+];
+
 /* ─── Persistent Memory Store (syncs across tab sessions in browser) ───────── */
 
 class LocalStore {
@@ -1073,54 +1260,56 @@ class LocalStore {
   taskAttachments: TaskAttachment[] = [...INITIAL_TASK_ATTACHMENTS];
   attendance: Attendance[] = [...INITIAL_ATTENDANCE];
   leaveRequests: LeaveRequest[] = [...INITIAL_LEAVE_REQUESTS];
+  deliverables: WorkDeliverable[] = [...INITIAL_DELIVERABLES];
+  workSchedules: WorkScheduleItem[] = [...INITIAL_WORK_SCHEDULES];
   notifications: AppNotification[] = [
     {
       id: "notif-1",
-      user_id: "u-mgr-1",
-      type: "leave_request",
-      title: "New Leave Request",
-      message: "Layla Khalid submitted a request for 3 days Annual Leave.",
-      link: "/manager/leave-approvals",
+      user_id: "u-emp-1",
+      type: "leave_approved",
+      title: "Leave Approved",
+      message: "Your request for 3 days Annual Leave has been approved.",
+      link: "/employee/leave",
       is_read: false,
       created_at: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
     },
     {
       id: "notif-2",
-      user_id: "u-mgr-1",
-      type: "task_due",
-      title: "Task In Review",
-      message: "Task 'Configure SAP RFC destination connectors' is ready for review.",
-      link: "/manager/tasks/t-2",
+      user_id: "u-emp-2",
+      type: "task_updated",
+      title: "Task Feedback",
+      message: "Deliverable 'Kafka Telemetry Consumer v1.2' was approved.",
+      link: "/employee/client-work",
       is_read: false,
       created_at: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
     },
     {
       id: "notif-3",
-      user_id: "u-mgr-1",
+      user_id: "u-emp-1",
       type: "client_assigned",
       title: "Client Milestone",
       message: "Apex Global Logistics contract renewal discussion due today.",
-      link: "/manager/clients/c-1",
+      link: "/employee/client-work",
       is_read: true,
       created_at: new Date(Date.now() - 1000 * 60 * 360).toISOString(),
     },
     {
       id: "notif-4",
-      user_id: "u-mgr-2",
+      user_id: "u-emp-2",
       type: "task_assigned",
       title: "New Task Assigned",
-      message: "Tariq Aziz assigned to 'HL7 FHIR interface schema validation'.",
-      link: "/manager/tasks/t-3",
+      message: "You are assigned to 'HL7 FHIR interface schema validation'.",
+      link: "/employee/client-work",
       is_read: false,
       created_at: new Date(Date.now() - 1000 * 60 * 80).toISOString(),
     },
     {
       id: "notif-5",
-      user_id: "u-mgr-2",
-      type: "follow_up_due",
-      title: "Lead Follow-up Due",
-      message: "Follow-up due with Eng. Salem Al-Harthi regarding IoT Dashboard.",
-      link: "/manager/dashboard",
+      user_id: "u-emp-1",
+      type: "project_update",
+      title: "Schedule Reminder",
+      message: "Client Sync scheduled for 11:00 AM with Apex Logistics.",
+      link: "/employee/schedule",
       is_read: false,
       created_at: new Date(Date.now() - 1000 * 60 * 200).toISOString(),
     },
@@ -1161,6 +1350,8 @@ class LocalStore {
             taskAttachments: this.taskAttachments,
             attendance: this.attendance,
             leaveRequests: this.leaveRequests,
+            deliverables: this.deliverables,
+            workSchedules: this.workSchedules,
             companySettings: this.companySettings,
             workflowSettings: this.workflowSettings,
           })
@@ -1958,6 +2149,12 @@ export const attendanceApi = {
       averageWorkingHours: 8.2,
     };
   },
+
+  async getByEmployee(employeeId: string): Promise<Attendance[]> {
+    return store.attendance
+      .filter((a) => a.employee_id === employeeId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  },
 };
 
 /* ─── Leave Requests API ────────────────────────────────────────────────────── */
@@ -2197,7 +2394,7 @@ export const notificationsApi = {
   async create(notification: Partial<AppNotification>): Promise<AppNotification> {
     const item: AppNotification = {
       id: notification.id || `notif-${Date.now()}`,
-      user_id: notification.user_id || "u-mgr-1",
+      user_id: notification.user_id || "u-emp-1",
       type: notification.type || "system",
       title: notification.title || "New Notification",
       message: notification.message || "",
@@ -2210,4 +2407,164 @@ export const notificationsApi = {
     return item;
   },
 };
+
+/* ─── Work Deliverables API ─────────────────────────────────────────────────── */
+
+export const deliverablesApi = {
+  async getAll(params?: {
+    employeeUserId?: string;
+    clientId?: string;
+    status?: string;
+    category?: string;
+  }): Promise<WorkDeliverable[]> {
+    let list = [...store.deliverables];
+
+    if (params?.employeeUserId) {
+      list = list.filter((d) => d.uploaded_by === params.employeeUserId);
+    }
+    if (params?.clientId) {
+      list = list.filter((d) => d.client_id === params.clientId);
+    }
+    if (params?.status) {
+      list = list.filter((d) => d.status === params.status);
+    }
+    if (params?.category) {
+      list = list.filter((d) => d.category === params.category);
+    }
+
+    return list
+      .map((d) => ({
+        ...d,
+        client: store.clients.find((c) => c.id === d.client_id),
+        task: store.tasks.find((t) => t.id === d.task_id),
+        uploader: store.users.find((u) => u.id === d.uploaded_by),
+      }))
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  },
+
+  async getById(id: string): Promise<WorkDeliverable | null> {
+    const found = store.deliverables.find((d) => d.id === id);
+    if (!found) return null;
+    return {
+      ...found,
+      client: store.clients.find((c) => c.id === found.client_id),
+      task: store.tasks.find((t) => t.id === found.task_id),
+      uploader: store.users.find((u) => u.id === found.uploaded_by),
+    };
+  },
+
+  async create(data: Partial<WorkDeliverable>): Promise<WorkDeliverable> {
+    const item: WorkDeliverable = {
+      id: data.id || `deliv-${Date.now()}`,
+      client_id: data.client_id || "c-1",
+      project_id: data.project_id,
+      task_id: data.task_id,
+      uploaded_by: data.uploaded_by || "u-emp-1",
+      title: data.title || "Untitled Deliverable",
+      category: data.category || "documentation",
+      file_name: data.file_name || "deliverable.pdf",
+      file_size: data.file_size || "2.4 MB",
+      file_url: data.file_url || "#",
+      version: data.version || "v1.0.0",
+      notes: data.notes || "",
+      status: data.status || "pending_review",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      client: store.clients.find((c) => c.id === data.client_id),
+      task: store.tasks.find((t) => t.id === data.task_id),
+      uploader: store.users.find((u) => u.id === data.uploaded_by),
+    };
+
+    store.deliverables.unshift(item);
+    store.save();
+    return item;
+  },
+
+  async update(id: string, updates: Partial<WorkDeliverable>): Promise<WorkDeliverable> {
+    const idx = store.deliverables.findIndex((d) => d.id === id);
+    if (idx === -1) throw new Error("Deliverable not found");
+    const updated: WorkDeliverable = {
+      ...store.deliverables[idx],
+      ...updates,
+      updated_at: new Date().toISOString(),
+    };
+    store.deliverables[idx] = updated;
+    store.save();
+    return updated;
+  },
+
+  async delete(id: string): Promise<boolean> {
+    store.deliverables = store.deliverables.filter((d) => d.id !== id);
+    store.save();
+    return true;
+  },
+};
+
+/* ─── Work Schedules API ────────────────────────────────────────────────────── */
+
+export const workSchedulesApi = {
+  async getAll(params?: {
+    employeeId?: string;
+    userId?: string;
+    date?: string;
+  }): Promise<WorkScheduleItem[]> {
+    let list = [...store.workSchedules];
+
+    if (params?.employeeId) {
+      list = list.filter((s) => s.employee_id === params.employeeId);
+    }
+    if (params?.userId) {
+      list = list.filter((s) => s.user_id === params.userId);
+    }
+    if (params?.date) {
+      list = list.filter((s) => s.start_time.startsWith(params.date!));
+    }
+
+    return list
+      .map((s) => ({
+        ...s,
+        client: store.clients.find((c) => c.id === s.client_id),
+      }))
+      .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+  },
+
+  async create(item: Partial<WorkScheduleItem>): Promise<WorkScheduleItem> {
+    const newItem: WorkScheduleItem = {
+      id: item.id || `sched-${Date.now()}`,
+      employee_id: item.employee_id || "emp-4",
+      user_id: item.user_id || "u-emp-1",
+      title: item.title || "Scheduled Block",
+      type: item.type || "focus_time",
+      start_time: item.start_time || new Date().toISOString(),
+      end_time: item.end_time || new Date(Date.now() + 3600000).toISOString(),
+      client_id: item.client_id,
+      task_id: item.task_id,
+      notes: item.notes,
+      is_completed: item.is_completed ?? false,
+      client: store.clients.find((c) => c.id === item.client_id),
+    };
+    store.workSchedules.push(newItem);
+    store.save();
+    return newItem;
+  },
+
+  async update(id: string, updates: Partial<WorkScheduleItem>): Promise<WorkScheduleItem> {
+    const idx = store.workSchedules.findIndex((s) => s.id === id);
+    if (idx === -1) throw new Error("Schedule item not found");
+    const updated: WorkScheduleItem = {
+      ...store.workSchedules[idx],
+      ...updates,
+    };
+    store.workSchedules[idx] = updated;
+    store.save();
+    return updated;
+  },
+
+  async delete(id: string): Promise<boolean> {
+    store.workSchedules = store.workSchedules.filter((s) => s.id !== id);
+    store.save();
+    return true;
+  },
+};
+
 

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 /* ─── Types ────────────────────────────────────────────────────────────────── */
 
-export type UserRole = "admin" | "manager" | "client";
+export type UserRole = "admin" | "manager" | "employee" | "client";
 
 export interface FilterOption {
   value: string;

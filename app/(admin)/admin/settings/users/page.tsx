@@ -25,6 +25,7 @@ import { toast } from "sonner";
 const ROLE_CONFIG: Record<UserRole, { label: string; style: string }> = {
   admin: { label: "Administrator", style: "bg-teal-500/15 text-teal-700 dark:text-teal-400 border-teal-500/20" },
   manager: { label: "Manager", style: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20" },
+  employee: { label: "Employee", style: "bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 border-indigo-500/20" },
   client: { label: "Staff / Client", style: "bg-slate-500/15 text-slate-700 dark:text-slate-400 border-slate-500/20" },
 };
 
@@ -140,6 +141,7 @@ export default function AdminUsersPage() {
         >
           <option value="admin">Administrator</option>
           <option value="manager">Manager</option>
+          <option value="employee">Employee</option>
           <option value="client">Client / Staff</option>
         </select>
       ),
@@ -252,6 +254,7 @@ export default function AdminUsersPage() {
                 >
                   <option value="admin">Administrator (Full Access)</option>
                   <option value="manager">Manager (Department Operations)</option>
+                  <option value="employee">Employee (Work Execution & Portal)</option>
                   <option value="client">Client / General Staff</option>
                 </select>
               </div>

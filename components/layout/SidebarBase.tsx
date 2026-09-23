@@ -26,7 +26,7 @@ export interface SidebarProps {
   mobileOpen: boolean;
   onMobileClose: () => void;
   /** Color accent for role badge */
-  accentColor: "teal" | "amber" | "sky";
+  accentColor: "teal" | "amber" | "sky" | "indigo";
   roleLabel: string;
   navItems: NavItem[];
   /** Current active href */
@@ -39,9 +39,10 @@ export interface SidebarProps {
 /* ─── Helpers ───────────────────────────────────────────────────────────────── */
 
 const ACCENT = {
-  teal:  { badge: "bg-teal-500/20 text-teal-400",  glow: "shadow-glow-teal",  dot: "bg-teal-500" },
-  amber: { badge: "bg-amber-500/20 text-amber-400", glow: "shadow-glow-amber", dot: "bg-amber-500" },
-  sky:   { badge: "bg-sky-500/20 text-sky-400",     glow: "shadow-glow-amber", dot: "bg-sky-500" },
+  teal:   { badge: "bg-teal-500/20 text-teal-400",   glow: "shadow-glow-teal",  dot: "bg-teal-500" },
+  amber:  { badge: "bg-amber-500/20 text-amber-400", glow: "shadow-glow-amber", dot: "bg-amber-500" },
+  sky:    { badge: "bg-sky-500/20 text-sky-400",     glow: "shadow-glow-amber", dot: "bg-sky-500" },
+  indigo: { badge: "bg-indigo-500/20 text-indigo-400", glow: "shadow-glow-teal", dot: "bg-indigo-500" },
 } as const;
 
 function NavIcon({ d, className }: { d: string; className?: string }) {
