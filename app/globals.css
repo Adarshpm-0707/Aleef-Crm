@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Design token CSS variables
+   Light mode defaults  →  .dark overrides
+   ─────────────────────────────────────────────────────────────────────────
+   Palette key:
+     Primary:     Deep Teal  (#0d9488)
+     Accent:      Warm Amber (#f59e0b)
+     Neutral:     Cool Slate
+     Success:     Emerald
+     Warning:     Amber
+     Danger:      Rose
+     Info:        Sky
+   ───────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    /* Backgrounds */
+    --background:          210 40% 98%;   /* slate-50 */
+    --foreground:          222 47% 11%;   /* slate-900 */
+
+    /* Card / Popover */
+    --card:                0 0% 100%;
+    --card-foreground:     222 47% 11%;
+    --popover:             0 0% 100%;
+    --popover-foreground:  222 47% 11%;
+
+    /* Primary — Teal 600 */
+    --primary:             174 90% 30%;   /* #0d9488 */
+    --primary-foreground:  0 0% 100%;
+
+    /* Secondary — Slate 100 */
+    --secondary:           210 40% 94%;
+    --secondary-foreground: 222 47% 11%;
+
+    /* Muted — Slate 100 */
+    --muted:               210 40% 94%;
+    --muted-foreground:    215 20% 36%;   /* slate-600: meets WCAG AA 4.5:1 on light bg */
+
+    /* Accent — Amber 500 */
+    --accent:              38 92% 50%;    /* #f59e0b */
+    --accent-foreground:   222 47% 11%;   /* dark text for high contrast on amber */
+
+    /* Destructive */
+    --destructive:         343 89% 55%;   /* rose-500 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders & rings */
+    --border:              214 32% 88%;   /* slate-200 */
+    --input:               214 32% 88%;
+    --ring:                174 90% 30%;   /* primary teal */
+
+    /* Semantic */
+    --success:             160 84% 39%;   /* emerald-600 */
+    --success-foreground:  0 0% 100%;
+    --warning:             38 92% 50%;    /* amber-500 */
+    --warning-foreground:  222 47% 11%;   /* dark text for high contrast on amber */
+    --danger:              343 89% 55%;   /* rose-500 */
+    --danger-foreground:   0 0% 100%;
+    --info:                199 89% 48%;   /* sky-500 */
+    --info-foreground:     0 0% 100%;
+
+    /* Sidebar */
+    --sidebar-background:           215 28% 17%;  /* slate-800 */
+    --sidebar-foreground:           210 40% 88%;
+    --sidebar-primary:              174 90% 30%;
+    --sidebar-primary-foreground:   0 0% 100%;
+    --sidebar-accent:               215 25% 27%;
+    --sidebar-accent-foreground:    210 40% 88%;
+    --sidebar-border:               215 25% 22%;
+    --sidebar-ring:                 174 90% 30%;
+
+    /* Charts */
+    --chart-1: 174 90% 30%;   /* teal */
+    --chart-2: 38 92% 50%;    /* amber */
+    --chart-3: 160 84% 39%;   /* emerald */
+    --chart-4: 199 89% 48%;   /* sky */
+    --chart-5: 343 89% 55%;   /* rose */
+  }
+
+  .dark {
+    --background:          222 47% 7%;    /* near-black slate */
+    --foreground:          210 40% 96%;
+
+    --card:                222 47% 9%;
+    --card-foreground:     210 40% 96%;
+    --popover:             222 47% 9%;
+    --popover-foreground:  210 40% 96%;
+
+    --primary:             174 72% 44%;   /* teal-400 */
+    --primary-foreground:  222 47% 7%;
+
+    --secondary:           217 33% 17%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted:               217 33% 17%;
+    --muted-foreground:    215 20% 68%;   /* slate-400: meets WCAG AA 4.5:1 on dark bg */
+
+    --accent:              38 92% 60%;    /* amber-400 */
+    --accent-foreground:   222 47% 7%;
+
+    --destructive:         343 80% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border:              217 33% 20%;
+    --input:               217 33% 20%;
+    --ring:                174 72% 44%;
+
+    --success:             160 84% 45%;
+    --success-foreground:  222 47% 7%;
+    --warning:             38 92% 60%;
+    --warning-foreground:  222 47% 7%;
+    --danger:              343 80% 60%;
+    --danger-foreground:   0 0% 100%;
+    --info:                199 89% 58%;
+    --info-foreground:     222 47% 7%;
+
+    --sidebar-background:  222 47% 5%;
+    --sidebar-foreground:  210 40% 80%;
+    --sidebar-primary:     174 72% 44%;
+    --sidebar-primary-foreground: 222 47% 7%;
+    --sidebar-accent:      217 33% 15%;
+    --sidebar-accent-foreground: 210 40% 80%;
+    --sidebar-border:      217 33% 15%;
+    --sidebar-ring:        174 72% 44%;
+
+    --chart-1: 174 72% 44%;
+    --chart-2: 38 92% 60%;
+    --chart-3: 160 84% 45%;
+    --chart-4: 199 89% 58%;
+    --chart-5: 343 80% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply scroll-smooth antialiased;
+    font-feature-settings: "cv11", "ss01";
+    font-variation-settings: "opsz" 32;
+  }
+  body {
+    @apply bg-background text-foreground min-h-screen;
+  }
+
+  /* Typography scale */
+  h1 { @apply text-4xl font-bold tracking-tight; }
+  h2 { @apply text-3xl font-semibold tracking-tight; }
+  h3 { @apply text-2xl font-semibold tracking-tight; }
+  h4 { @apply text-xl font-semibold; }
+  h5 { @apply text-lg font-medium; }
+  h6 { @apply text-base font-medium; }
+
+  /* Focus ring */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar        { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track  { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb  { @apply bg-border rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-muted-foreground/40; }
+}
+
+@layer utilities {
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-teal-300;
+  }
+  /* Glass card */
+  .glass {
+    @apply backdrop-blur-md bg-white/10 border border-white/20;
+  }
+  /* Skeleton shimmer */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--muted) / 0.5) 50%,
+      hsl(var(--muted)) 75%
+    );
+    background-size: 1000px 100%;
+    @apply animate-shimmer rounded;
+  }
+  /* Mobile Touch Target (WCAG 2.5.5 / 2.5.8) */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
