@@ -64,13 +64,13 @@
     --info-foreground:     0 0% 100%;
 
     /* Sidebar */
-    --sidebar-background:           215 28% 17%;  /* slate-800 */
-    --sidebar-foreground:           210 40% 88%;
-    --sidebar-primary:              174 90% 30%;
+    --sidebar-background:           0 0% 100%;    /* clean white */
+    --sidebar-foreground:           222 47% 15%;  /* slate-900 */
+    --sidebar-primary:              174 90% 30%;  /* teal-600 */
     --sidebar-primary-foreground:   0 0% 100%;
-    --sidebar-accent:               215 25% 27%;
-    --sidebar-accent-foreground:    210 40% 88%;
-    --sidebar-border:               215 25% 22%;
+    --sidebar-accent:               210 40% 96%;  /* slate-100 hover */
+    --sidebar-accent-foreground:    222 47% 11%;  /* slate-900 */
+    --sidebar-border:               214 32% 91%;  /* slate-200 border */
     --sidebar-ring:                 174 90% 30%;
 
     /* Charts */
@@ -176,6 +176,25 @@
   /* Glass card */
   .glass {
     @apply backdrop-blur-md bg-white/10 border border-white/20;
+  }
+  /* Minimalist Card */
+  .card-minimal {
+    @apply rounded-2xl border border-border/70 bg-card/95 backdrop-blur-sm shadow-[0_2px_12px_-4px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.25)] transition-all duration-200;
+  }
+  .card-minimal-hover {
+    @apply hover:border-primary/40 hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_24px_-8px_rgba(0,0,0,0.4)] hover:-translate-y-0.5 transition-all duration-200;
+  }
+  /* Glass pill */
+  .glass-pill {
+    @apply rounded-full border border-border/80 bg-background/80 backdrop-blur-md shadow-sm;
+  }
+  /* Hide scrollbar */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   /* Skeleton shimmer */
   .skeleton {

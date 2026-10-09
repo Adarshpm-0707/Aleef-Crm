@@ -93,7 +93,7 @@ export default function CrmReportPage() {
     { key: "title", header: "Opportunity" },
     { key: "client", header: "Client" },
     { key: "contact_name", header: "Contact" },
-    { key: "lead_value", header: "Value (SAR)" },
+    { key: "lead_value", header: "Value (₹)" },
     { key: "status", header: "Stage" },
     { key: "owner", header: "Account Rep" },
     { key: "created_at", header: "Created Date" },
@@ -131,11 +131,11 @@ export default function CrmReportPage() {
     },
     {
       key: "lead_value",
-      header: "Deal Value (SAR)",
+      header: "Deal Value (₹)",
       sortable: true,
       cell: (row) => (
         <span className="font-bold text-teal-600">
-          SAR {(row.lead_value || 0).toLocaleString()}
+          ₹ {(row.lead_value || 0).toLocaleString("en-IN")}
         </span>
       ),
     },
@@ -177,11 +177,11 @@ export default function CrmReportPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
         <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
           <span className="text-xs font-medium text-muted-foreground">Pipeline Value</span>
-          <p className="mt-1 text-2xl font-bold text-foreground">SAR {totalValue.toLocaleString()}</p>
+          <p className="mt-1 text-2xl font-bold text-foreground">₹ {totalValue.toLocaleString("en-IN")}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
           <span className="text-xs font-medium text-muted-foreground">Won Deals Revenue</span>
-          <p className="mt-1 text-2xl font-bold text-emerald-600">SAR {wonValue.toLocaleString()}</p>
+          <p className="mt-1 text-2xl font-bold text-emerald-600">₹ {wonValue.toLocaleString("en-IN")}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
           <span className="text-xs font-medium text-muted-foreground">Opportunities Logged</span>
@@ -256,7 +256,7 @@ export default function CrmReportPage() {
 
       {/* Visual Chart */}
       <div className="rounded-xl border border-border bg-card p-6 shadow-sm" aria-label="Pipeline Distribution Chart">
-        <h2 className="text-base font-semibold text-foreground mb-4">Pipeline Distribution by Stage (SAR)</h2>
+        <h2 className="text-base font-semibold text-foreground mb-4">Pipeline Distribution by Stage (₹)</h2>
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={stageChartData} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
@@ -271,7 +271,7 @@ export default function CrmReportPage() {
                   color: "hsl(var(--foreground))",
                 }}
               />
-              <Bar dataKey="value" name="Stage Value (SAR)" fill="#0d9488" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="value" name="Stage Value (₹)" fill="#0d9488" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

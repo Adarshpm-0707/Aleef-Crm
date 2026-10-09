@@ -1,26 +1,40 @@
 /**
- * Topbar — sticky top navigation bar.
- * - Hamburger button on mobile/tablet (triggers sidebar drawer via onMenuClick)
- * - Page title passed from parent
- * - Search, notifications, theme toggle, user avatar
+ * components/layout/Topbar.tsx
+ *
+ * Modern minimalist sticky top navigation bar with:
+ * - Responsive hamburger drawer trigger for mobile/tablet
+ * - Clean page title
+ * - Notification dropdown with live indicators
+ * - User avatar menu and theme switcher
  */
 
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import {
+  Menu,
+  Bell,
+  CheckCircle2,
+  Clock,
+  ChevronDown,
+  LogOut,
+  User as UserIcon,
+  Settings,
+  Sparkles,
+} from "lucide-react";
 
 export interface TopbarProps {
   title?: string;
   onMenuClick?: () => void;
-  /** User info for the avatar */
   user?: {
     name: string;
     email?: string;
     avatarUrl?: string;
     role?: string;
   };
-  /** Optionally inject extra actions (right side) */
   actions?: React.ReactNode;
   className?: string;
 }
@@ -43,50 +57,54 @@ export function Topbar({ title, onMenuClick, user, actions, className }: TopbarP
   }, [notifOpen, userOpen]);
 
   const initials = user?.name
-    ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
     : "U";
 
   return (
     <header
       role="banner"
       className={cn(
-        "sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-        "sm:px-6",
-        className,
+        "sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/70 bg-background/85 px-3.5 sm:px-6 backdrop-blur-md supports-[backdrop-filter]:bg-background/75 transition-colors",
+        className
       )}
     >
-      {/* Left: hamburger + title */}
-      <div className="flex items-center gap-3">
-        {/* Hamburger (mobile) */}
+      {/* Left Column: Hamburger + Page Title */}
+      <div className="flex items-center gap-3 min-w-0">
+        {/* Hamburger (Mobile & Tablet) */}
         <button
           type="button"
           id="topbar-menu-btn"
           onClick={onMenuClick}
           aria-label="Open navigation menu"
           aria-controls="sidebar-navigation-drawer"
-          className={cn(
-            "inline-flex min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors",
-            "hover:bg-muted hover:text-foreground lg:hidden",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          )}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border/70 text-muted-foreground transition-all hover:bg-muted hover:text-foreground active:scale-95 lg:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="h-5 w-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
+          <Menu className="h-5 w-5" />
         </button>
 
+        {/* Page Title */}
         {title && (
-          <h2 className="hidden text-sm font-medium text-muted-foreground sm:block">
+          <h2 className="text-sm sm:text-base font-semibold text-foreground tracking-tight truncate">
             {title}
           </h2>
         )}
       </div>
 
-      {/* Right: actions + notifications + user */}
-      <div className="flex items-center gap-1.5">
-        {actions}
+      {/* Right Column: Actions + Notifications + Theme Toggle + User Menu */}
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Custom Actions (e.g. Employee Switcher or Client Switcher) */}
+        {actions && <div className="flex items-center">{actions}</div>}
 
-        {/* Notifications */}
+        {/* Theme Toggle (Light / Dark) */}
+        <ThemeToggle variant="pill" className="hidden sm:inline-flex" />
+        <ThemeToggle variant="icon" className="sm:hidden" />
+
+        {/* Notifications Popover */}
         <div className="relative">
           <button
             type="button"
@@ -94,56 +112,108 @@ export function Topbar({ title, onMenuClick, user, actions, className }: TopbarP
             aria-label="Notifications"
             aria-haspopup="true"
             aria-expanded={notifOpen}
-            onClick={() => { setNotifOpen((v) => !v); setUserOpen(false); }}
-            className={cn(
-              "relative inline-flex min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors",
-              "hover:bg-muted hover:text-foreground",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            )}
+            onClick={() => {
+              setNotifOpen((v) => !v);
+              setUserOpen(false);
+            }}
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border/70 text-muted-foreground transition-all hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="h-5 w-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-            </svg>
-            {/* Badge */}
-            <span aria-label="3 unread notifications" className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-danger ring-2 ring-background" />
+            <Bell className="h-4 w-4" />
+            {/* Live Indicator Pill */}
+            <span
+              aria-label="3 notifications"
+              className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-background"
+            />
           </button>
 
           {notifOpen && (
             <div
               role="dialog"
               aria-label="Notifications panel"
-              className="absolute right-0 z-50 mt-2 w-80 origin-top-right rounded-xl border border-border bg-popover shadow-lg animate-scale-in"
+              className="absolute right-0 top-full mt-2 w-80 sm:w-88 origin-top-right rounded-2xl border border-border/80 bg-popover/95 backdrop-blur-xl shadow-2xl animate-scale-in z-50 overflow-hidden"
             >
-              <div className="border-b border-border px-4 py-3">
-                <p className="text-sm font-semibold text-foreground">Notifications</p>
-              </div>
-              {[
-                { text: "New lead assigned to you", time: "2 min ago", unread: true },
-                { text: "Task 'Proposal Draft' is due today", time: "1 hr ago", unread: true },
-                { text: "Client Farid approved the contract", time: "3 hrs ago", unread: false },
-              ].map((n, i) => (
+              <div className="flex items-center justify-between border-b border-border/60 px-4 py-3 bg-muted/20">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold text-foreground">Notifications</p>
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
+                    3 New
+                  </span>
+                </div>
                 <button
-                  key={i}
-                  className={cn(
-                    "flex w-full items-start gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:bg-muted",
-                    n.unread && "bg-primary/5",
-                  )}
+                  onClick={() => setNotifOpen(false)}
+                  className="text-xs font-medium text-primary hover:underline"
                 >
-                  {n.unread && <span aria-hidden="true" className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-primary" />}
-                  <div className={cn("space-y-0.5", !n.unread && "pl-5")}>
-                    <p className="font-medium text-foreground">{n.text}</p>
-                    <p className="text-xs text-muted-foreground">{n.time}</p>
-                  </div>
+                  Mark read
                 </button>
-              ))}
-              <div className="border-t border-border px-4 py-2">
-                <button className="text-xs font-medium text-primary hover:underline">Mark all as read</button>
+              </div>
+
+              <div className="divide-y divide-border/40 max-h-80 overflow-y-auto">
+                {[
+                  {
+                    title: "Proposal Approved",
+                    desc: "Apex Logistics approved the Q3 scope proposal.",
+                    time: "10m ago",
+                    icon: CheckCircle2,
+                    color: "text-emerald-500 bg-emerald-500/10",
+                    unread: true,
+                  },
+                  {
+                    title: "Task Review Due",
+                    desc: "Deliverable 'Cloud Infrastructure Architecture' awaiting review.",
+                    time: "1h ago",
+                    icon: Clock,
+                    color: "text-amber-500 bg-amber-500/10",
+                    unread: true,
+                  },
+                  {
+                    title: "System Update",
+                    desc: "Aleef CRM v2.4 upgrade completed smoothly.",
+                    time: "3h ago",
+                    icon: Sparkles,
+                    color: "text-teal-500 bg-teal-500/10",
+                    unread: false,
+                  },
+                ].map((n, i) => {
+                  const NIcon = n.icon;
+                  return (
+                    <div
+                      key={i}
+                      className={cn(
+                        "flex items-start gap-3 p-3.5 transition-colors hover:bg-muted/40 cursor-pointer",
+                        n.unread && "bg-primary/[0.03]"
+                      )}
+                    >
+                      <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg mt-0.5", n.color)}>
+                        <NIcon className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 space-y-0.5 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-semibold text-foreground truncate">{n.title}</p>
+                          <span className="text-[10px] text-muted-foreground shrink-0">{n.time}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                          {n.desc}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="border-t border-border/60 p-2.5 text-center bg-muted/10">
+                <Link
+                  href="/admin/crm/follow-ups"
+                  onClick={() => setNotifOpen(false)}
+                  className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  View all activity history &rarr;
+                </Link>
               </div>
             </div>
           )}
         </div>
 
-        {/* User menu */}
+        {/* User Menu */}
         <div className="relative">
           <button
             type="button"
@@ -151,68 +221,78 @@ export function Topbar({ title, onMenuClick, user, actions, className }: TopbarP
             aria-label={`User menu for ${user?.name ?? "User"}`}
             aria-haspopup="true"
             aria-expanded={userOpen}
-            onClick={() => { setUserOpen((v) => !v); setNotifOpen(false); }}
-            className={cn(
-              "flex min-h-[44px] sm:min-h-0 items-center gap-2 rounded-lg border border-border px-2.5 py-1.5 sm:py-1 text-sm font-medium transition-colors",
-              "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            )}
+            onClick={() => {
+              setUserOpen((v) => !v);
+              setNotifOpen(false);
+            }}
+            className="flex h-9 items-center gap-2 rounded-xl border border-border/70 px-2 py-1 text-sm font-medium transition-all hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {user?.avatarUrl ? (
-              <img src={user.avatarUrl} alt={user.name} className="h-7 w-7 rounded-full object-cover ring-2 ring-primary/30" />
+              <img
+                src={user.avatarUrl}
+                alt={user.name}
+                className="h-6 w-6 rounded-lg object-cover ring-1 ring-primary/30"
+              />
             ) : (
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-500/20 text-xs font-bold text-teal-600 ring-2 ring-teal-500/30">
+              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-teal-500/15 text-xs font-bold text-teal-600 dark:text-teal-400">
                 {initials}
               </span>
             )}
-            <span className="hidden max-w-[100px] truncate sm:inline">{user?.name ?? "User"}</span>
-            <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 text-muted-foreground">
-              <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-            </svg>
+            <span className="hidden max-w-[110px] truncate md:inline text-xs font-semibold text-foreground">
+              {user?.name ?? "User"}
+            </span>
+            <ChevronDown className="h-3 w-3 text-muted-foreground" />
           </button>
 
           {userOpen && (
             <div
               role="menu"
               aria-label="User options"
-              className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-xl border border-border bg-popover shadow-lg animate-scale-in py-1"
+              className="absolute right-0 top-full mt-2 w-56 origin-top-right rounded-2xl border border-border/80 bg-popover/95 backdrop-blur-xl shadow-2xl animate-scale-in py-1.5 z-50 overflow-hidden"
             >
-              {/* Header */}
-              <div className="border-b border-border px-4 py-3">
-                <p className="text-sm font-semibold text-foreground">{user?.name ?? "User"}</p>
-                {user?.email && <p className="text-xs text-muted-foreground truncate">{user.email}</p>}
+              {/* User Details */}
+              <div className="border-b border-border/60 px-4 py-3 bg-muted/20">
+                <p className="text-sm font-semibold text-foreground truncate">{user?.name ?? "User"}</p>
+                {user?.email && (
+                  <p className="text-xs text-muted-foreground truncate mt-0.5">{user.email}</p>
+                )}
                 {user?.role && (
-                  <span className="mt-1 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-primary">
+                  <span className="mt-2 inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
                     {user.role}
                   </span>
                 )}
               </div>
 
-              {[
-                { label: "Profile", icon: "M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" },
-                { label: "Settings", icon: "M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
-              ].map((item) => (
-                <button
-                  key={item.label}
-                  role="menuitem"
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors focus-visible:bg-muted focus-visible:outline-none"
+              {/* Account settings */}
+              <div className="p-1 space-y-0.5">
+                <Link
+                  href="/admin/settings/company"
+                  onClick={() => setUserOpen(false)}
+                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
                 >
-                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="h-4 w-4 text-muted-foreground">
-                    <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
-                  </svg>
-                  {item.label}
-                </button>
-              ))}
+                  <Settings className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>Platform Settings</span>
+                </Link>
+                <Link
+                  href="/portal/profile"
+                  onClick={() => setUserOpen(false)}
+                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+                >
+                  <UserIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>User Profile</span>
+                </Link>
+              </div>
 
-              <div className="border-t border-border">
-                <button
-                  role="menuitem"
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-danger hover:bg-danger/10 transition-colors focus-visible:bg-danger/10 focus-visible:outline-none"
+              {/* Sign out */}
+              <div className="border-t border-border/60 p-1">
+                <Link
+                  href="/login"
+                  onClick={() => setUserOpen(false)}
+                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-rose-500 hover:bg-rose-500/10 transition-colors"
                 >
-                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="h-4 w-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-                  </svg>
-                  Sign out
-                </button>
+                  <LogOut className="h-3.5 w-3.5" />
+                  <span>Sign out</span>
+                </Link>
               </div>
             </div>
           )}

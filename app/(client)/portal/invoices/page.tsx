@@ -46,8 +46,8 @@ const SAMPLE_INVOICES_BY_CLIENT: Record<string, ClientInvoice[]> = {
       projectName: "Fleet Telematics Integration",
       issueDate: "2026-01-20",
       dueDate: "2026-02-20",
-      amount: 45000,
-      currency: "SAR",
+      amount: 350000,
+      currency: "INR",
       status: "paid",
       description: "Milestone 1: Architectural blueprint & Kafka ingestion design",
     },
@@ -57,10 +57,10 @@ const SAMPLE_INVOICES_BY_CLIENT: Record<string, ClientInvoice[]> = {
       projectName: "Fleet Telematics Integration",
       issueDate: "2026-02-25",
       dueDate: "2026-03-25",
-      amount: 55000,
-      currency: "SAR",
+      amount: 420000,
+      currency: "INR",
       status: "paid",
-      description: "Milestone 2: SAP S/4HANA RFC destination connector & geofencing engine",
+      description: "Milestone 2: ERP connector & geofencing engine",
     },
     {
       id: "inv-103",
@@ -68,8 +68,8 @@ const SAMPLE_INVOICES_BY_CLIENT: Record<string, ClientInvoice[]> = {
       projectName: "Automated Dispatch Optimization",
       issueDate: "2026-03-01",
       dueDate: "2026-03-31",
-      amount: 45000,
-      currency: "SAR",
+      amount: 380000,
+      currency: "INR",
       status: "pending",
       description: "Milestone 1: Route scheduling algorithms & traffic model benchmarking",
     },
@@ -81,10 +81,10 @@ const SAMPLE_INVOICES_BY_CLIENT: Record<string, ClientInvoice[]> = {
       projectName: "Health Records Cloud Sync",
       issueDate: "2026-02-05",
       dueDate: "2026-03-05",
-      amount: 48000,
-      currency: "SAR",
+      amount: 450000,
+      currency: "INR",
       status: "paid",
-      description: "Milestone 1: HIPAA/Seha encryption boundary & auth service",
+      description: "Milestone 1: Security compliance boundary & auth service",
     },
     {
       id: "inv-202",
@@ -92,8 +92,8 @@ const SAMPLE_INVOICES_BY_CLIENT: Record<string, ClientInvoice[]> = {
       projectName: "Health Records Cloud Sync",
       issueDate: "2026-03-02",
       dueDate: "2026-04-02",
-      amount: 50000,
-      currency: "SAR",
+      amount: 480000,
+      currency: "INR",
       status: "pending",
       description: "Milestone 2: FHIR schema validation microservice & audit logs",
     },
@@ -105,8 +105,8 @@ const SAMPLE_INVOICES_BY_CLIENT: Record<string, ClientInvoice[]> = {
       projectName: "AML & KYC Verification Portal",
       issueDate: "2026-02-26",
       dueDate: "2026-03-26",
-      amount: 65000,
-      currency: "AED",
+      amount: 550000,
+      currency: "INR",
       status: "pending",
       description: "Project Initiation & Document verification sandbox integration",
     },
@@ -149,8 +149,8 @@ export default function ClientInvoicesPage() {
         projectName: "Enterprise Consultation & Scoping",
         issueDate: "2026-02-01",
         dueDate: "2026-03-01",
-        amount: 25000,
-        currency: "SAR",
+        amount: 250000,
+        currency: "INR",
         status: "paid",
         description: "Initial discovery and architecture mapping",
       },
@@ -158,7 +158,7 @@ export default function ClientInvoicesPage() {
   }, [client.clientId]);
 
   // Calculations
-  const currency = rawInvoices[0]?.currency || "SAR";
+  const currency = rawInvoices[0]?.currency || "INR";
   const totalBilled = rawInvoices.reduce((sum, i) => sum + i.amount, 0);
   const totalPaid = rawInvoices.filter((i) => i.status === "paid").reduce((sum, i) => sum + i.amount, 0);
   const totalPending = rawInvoices.filter((i) => i.status === "pending" || i.status === "overdue").reduce((sum, i) => sum + i.amount, 0);
@@ -218,7 +218,7 @@ export default function ClientInvoicesPage() {
               </div>
             </div>
             <p className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              {currency} {totalBilled.toLocaleString()}
+              {currency === "INR" ? "₹" : currency} {totalBilled.toLocaleString("en-IN")}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
               Across {rawInvoices.length} project statements
@@ -236,7 +236,7 @@ export default function ClientInvoicesPage() {
               </div>
             </div>
             <p className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
-              {currency} {totalPaid.toLocaleString()}
+              {currency === "INR" ? "₹" : currency} {totalPaid.toLocaleString("en-IN")}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
               {Math.round((totalPaid / (totalBilled || 1)) * 100)}% settled
@@ -254,10 +254,10 @@ export default function ClientInvoicesPage() {
               </div>
             </div>
             <p className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-amber-600 dark:text-amber-400">
-              {currency} {totalPending.toLocaleString()}
+              {currency === "INR" ? "₹" : currency} {totalPending.toLocaleString("en-IN")}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Payable via bank transfer or credit card
+              Payable via NEFT / RTGS or online gateway
             </p>
           </div>
         </div>
@@ -355,7 +355,7 @@ export default function ClientInvoicesPage() {
                             </td>
                             <td className="px-4 py-3.5 whitespace-nowrap">
                               <span className="font-bold text-foreground">
-                                {inv.currency} {inv.amount.toLocaleString()}
+                                {inv.currency === "INR" ? "₹" : inv.currency} {inv.amount.toLocaleString("en-IN")}
                               </span>
                             </td>
                             <td className="px-4 py-3.5 whitespace-nowrap">
@@ -419,7 +419,7 @@ export default function ClientInvoicesPage() {
                               Total Amount
                             </span>
                             <span className="font-bold text-sm text-foreground mt-0.5 block">
-                              {inv.currency} {inv.amount.toLocaleString()}
+                              {inv.currency === "INR" ? "₹" : inv.currency} {inv.amount.toLocaleString("en-IN")}
                             </span>
                           </div>
                         </div>
@@ -444,35 +444,35 @@ export default function ClientInvoicesPage() {
         <div className="space-y-4">
           <div className="rounded-xl border border-border bg-card p-5 shadow-card space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground pb-2 border-b border-border flex items-center gap-2">
-              <CreditCard className="h-4 w-4 text-sky-500 dark:text-sky-400" /> Settlement & Wire Instructions
+              <CreditCard className="h-4 w-4 text-sky-500 dark:text-sky-400" /> NEFT / RTGS Settlement Instructions
             </h3>
 
             <div className="space-y-3 text-xs leading-relaxed">
               <div>
                 <p className="text-muted-foreground">Beneficiary Name</p>
-                <p className="font-bold text-foreground">Aleef Technology Solutions Ltd.</p>
+                <p className="font-bold text-foreground">Aleef Technology Solutions Pvt. Ltd.</p>
               </div>
 
               <div>
                 <p className="text-muted-foreground">Bank Name</p>
-                <p className="font-medium text-foreground">Al Rajhi Banking Corporation</p>
+                <p className="font-medium text-foreground">HDFC Bank Ltd.</p>
               </div>
 
               <div>
-                <p className="text-muted-foreground">IBAN (Saudi Arabia)</p>
+                <p className="text-muted-foreground">Account Number</p>
                 <p className="font-mono text-xs bg-muted/50 p-2 rounded font-bold text-foreground select-all mt-0.5">
-                  SA03 8000 0456 1234 5678 9012
+                  50200089234156
                 </p>
               </div>
 
               <div>
-                <p className="text-muted-foreground">SWIFT / BIC Code</p>
-                <p className="font-mono text-xs text-foreground font-semibold">RJHISARIXXX</p>
+                <p className="text-muted-foreground">IFSC Code</p>
+                <p className="font-mono text-xs text-foreground font-semibold">HDFC0001234</p>
               </div>
 
               <div>
-                <p className="text-muted-foreground">ZATCA VAT Tax Registration ID</p>
-                <p className="font-mono text-xs text-foreground font-semibold">300987654300003</p>
+                <p className="text-muted-foreground">GSTIN Tax Registration ID</p>
+                <p className="font-mono text-xs text-foreground font-semibold">27AAPCA1234F1Z5</p>
               </div>
             </div>
 

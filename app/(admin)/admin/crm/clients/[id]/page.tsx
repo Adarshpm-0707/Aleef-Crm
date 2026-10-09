@@ -270,7 +270,7 @@ export default function ClientProfilePage() {
             <div className="rounded-xl bg-muted/40 p-3 min-w-[120px]">
               <span className="text-xs text-muted-foreground">Total Revenue</span>
               <p className="mt-1 text-lg font-bold text-foreground">
-                SAR {(client.total_revenue || 120000).toLocaleString()}
+                ₹ {(client.total_revenue || 120000).toLocaleString("en-IN")}
               </p>
             </div>
             <div className="rounded-xl bg-muted/40 p-3 min-w-[120px]">
@@ -411,7 +411,7 @@ export default function ClientProfilePage() {
                   </div>
                   <p className="text-xs text-muted-foreground">Contact: {l.contact_name}</p>
                   <div className="flex items-center justify-between pt-2 border-t border-border/60 text-xs">
-                    <span className="font-bold text-teal-600">SAR {(l.lead_value || 0).toLocaleString()}</span>
+                    <span className="font-bold text-teal-600">₹ {(l.lead_value || 0).toLocaleString("en-IN")}</span>
                     <span className="text-muted-foreground">Next: {l.follow_up_date}</span>
                   </div>
                 </div>

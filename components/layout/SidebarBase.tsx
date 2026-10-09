@@ -8,7 +8,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 /* ─── Types ────────────────────────────────────────────────────────────────── */
 
@@ -39,10 +41,10 @@ export interface SidebarProps {
 /* ─── Helpers ───────────────────────────────────────────────────────────────── */
 
 const ACCENT = {
-  teal:   { badge: "bg-teal-500/20 text-teal-400",   glow: "shadow-glow-teal",  dot: "bg-teal-500" },
-  amber:  { badge: "bg-amber-500/20 text-amber-400", glow: "shadow-glow-amber", dot: "bg-amber-500" },
-  sky:    { badge: "bg-sky-500/20 text-sky-400",     glow: "shadow-glow-amber", dot: "bg-sky-500" },
-  indigo: { badge: "bg-indigo-500/20 text-indigo-400", glow: "shadow-glow-teal", dot: "bg-indigo-500" },
+  teal:   { badge: "bg-teal-500/10 text-teal-700 dark:text-teal-400 dark:bg-teal-500/20",   glow: "shadow-glow-teal",  dot: "bg-teal-600 dark:bg-teal-500" },
+  amber:  { badge: "bg-amber-500/10 text-amber-700 dark:text-amber-400 dark:bg-amber-500/20", glow: "shadow-glow-amber", dot: "bg-amber-600 dark:bg-amber-500" },
+  sky:    { badge: "bg-sky-500/10 text-sky-700 dark:text-sky-400 dark:bg-sky-500/20",     glow: "shadow-glow-amber", dot: "bg-sky-600 dark:bg-sky-500" },
+  indigo: { badge: "bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 dark:bg-indigo-500/20", glow: "shadow-glow-teal", dot: "bg-indigo-600 dark:bg-indigo-500" },
 } as const;
 
 function NavIcon({ d, className }: { d: string; className?: string }) {
@@ -82,7 +84,7 @@ function NavLink({
           aria-expanded={expanded}
           onClick={() => setExpanded((v) => !v)}
           className={cn(
-            "flex min-h-[44px] sm:min-h-0 w-full items-center gap-3 rounded-lg px-3 py-2.5 sm:py-2 text-sm font-medium transition-all",
+            "flex min-h-[44px] sm:min-h-0 w-full items-center gap-3 rounded-xl px-3 py-2.5 sm:py-2 text-sm font-medium transition-all duration-150",
             "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
             collapsed && "justify-center px-2",
@@ -92,12 +94,12 @@ function NavLink({
           <NavIcon d={item.icon} />
           {!collapsed && (
             <>
-              <span className="flex-1 truncate">{item.label}</span>
+              <span className="flex-1 truncate text-left">{item.label}</span>
               <svg
                 aria-hidden="true"
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                className={cn("h-3.5 w-3.5 transition-transform", expanded && "rotate-180")}
+                className={cn("h-3.5 w-3.5 transition-transform duration-200", expanded && "rotate-180")}
               >
                 <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
               </svg>
@@ -105,21 +107,21 @@ function NavLink({
           )}
         </button>
         {expanded && !collapsed && (
-          <ul className="ml-7 mt-0.5 space-y-0.5 border-l border-sidebar-border pl-3">
+          <ul className="ml-5 mt-1 space-y-1 border-l border-sidebar-border/70 pl-3">
             {item.children.map((child) => (
               <li key={child.href}>
-                <a
+                <Link
                   href={child.href}
                   onClick={onClick}
                   className={cn(
-                    "flex min-h-[44px] sm:min-h-0 items-center gap-2 rounded-lg px-2 py-2.5 sm:py-1.5 text-sm transition-all",
+                    "flex min-h-[40px] sm:min-h-0 items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all duration-150",
                     "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
                   )}
                 >
                   <NavIcon d={child.icon} className="h-3.5 w-3.5" />
                   <span className="truncate">{child.label}</span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -130,32 +132,32 @@ function NavLink({
 
   return (
     <li>
-      <a
+      <Link
         href={item.href}
         onClick={onClick}
         aria-current={active ? "page" : undefined}
         title={collapsed ? item.label : undefined}
         className={cn(
-          "flex min-h-[44px] sm:min-h-0 items-center gap-3 rounded-lg px-3 py-2.5 sm:py-2 text-sm font-medium transition-all",
+          "flex min-h-[44px] sm:min-h-0 items-center gap-3 rounded-xl px-3 py-2.5 sm:py-2 text-sm font-medium transition-all duration-150",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
           active
-            ? "bg-sidebar-primary/20 text-sidebar-foreground"
+            ? "bg-primary/10 text-primary font-semibold shadow-xs border border-primary/20"
             : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground",
           collapsed && "justify-center px-2",
         )}
       >
-        <NavIcon d={item.icon} className={active ? "text-sidebar-primary" : ""} />
+        <NavIcon d={item.icon} className={active ? "text-primary" : "text-muted-foreground"} />
         {!collapsed && (
           <>
             <span className="flex-1 truncate">{item.label}</span>
             {item.badge !== undefined && (
-              <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-semibold text-primary">
+              <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary">
                 {item.badge}
               </span>
             )}
           </>
         )}
-      </a>
+      </Link>
     </li>
   );
 }
@@ -245,6 +247,12 @@ export function SidebarBase({
         </div>
       )}
 
+      {/* Theme toggle in sidebar */}
+      <div className={cn("border-t border-sidebar-border p-3 flex items-center", collapsed ? "justify-center" : "justify-between")}>
+        {!collapsed && <span className="text-xs font-medium text-sidebar-foreground/70">Appearance</span>}
+        <ThemeToggle variant={collapsed ? "icon" : "pill"} />
+      </div>
+
       {/* Collapse toggle (desktop only) */}
       <div className="hidden border-t border-sidebar-border p-3 lg:block">
         <button
@@ -253,7 +261,7 @@ export function SidebarBase({
           onClick={() => setCollapsed((v) => !v)}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className={cn(
-            "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/60 transition-colors",
+            "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors",
             "hover:bg-sidebar-accent hover:text-sidebar-foreground",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
             collapsed && "justify-center",
@@ -315,7 +323,7 @@ export function SidebarBase({
               type="button"
               onClick={onMobileClose}
               aria-label="Close menu"
-              className="absolute right-3 top-3 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+              className="absolute right-3 top-3 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
             >
               <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor" className="h-5 w-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

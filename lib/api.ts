@@ -1039,9 +1039,9 @@ const INITIAL_COMPANY_SETTINGS: CompanySettings = {
   email: "contact@aleefcrm.com",
   phone: "+966 11 400 9000",
   address: "Tower 3, King Abdullah Financial District (KAFD), Riyadh, Saudi Arabia",
-  tax_id: "310492839200003",
-  currency: "SAR",
-  timezone: "Asia/Riyadh (UTC+03:00)",
+  tax_id: "27AAPCA1234F1Z5",
+  currency: "INR",
+  timezone: "Asia/Kolkata (IST UTC+05:30)",
   working_hours_start: "08:30",
   working_hours_end: "17:30",
   grace_period_minutes: 15,
@@ -1607,7 +1607,7 @@ export const leadsApi = {
     await activitiesApi.create({
       client_id: newClient.id,
       type: "update",
-      content: `Lead "${lead.title}" was successfully converted into active client with value of SAR ${(lead.lead_value || 0).toLocaleString()}.`,
+      content: `Lead "${lead.title}" was successfully converted into active client with value of ₹ ${(lead.lead_value || 0).toLocaleString("en-IN")}.`,
       created_by: lead.owner_id || store.users[0]?.id,
     });
 

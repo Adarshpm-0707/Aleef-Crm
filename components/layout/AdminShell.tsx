@@ -1,9 +1,9 @@
 /**
  * components/layout/AdminShell.tsx
  *
- * Client shell for the Admin section.
- * Manages responsive sidebar drawer state, current path highlighting,
- * and topbar controls.
+ * Modern minimalist client shell for the Admin section.
+ * Manages responsive sidebar drawer state, Topbar controls with 3-section switcher,
+ * thumb-friendly mobile bottom navigation, and accessible main container.
  */
 
 "use client";
@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import { AdminSidebar } from "./AdminSidebar";
 import { Topbar } from "./Topbar";
+import { MobileBottomBar } from "./MobileBottomBar";
 import { Toaster } from "sonner";
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
@@ -21,7 +22,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const user = {
     name: "Ahmed Al-Mansoor",
     email: "admin@aleefcrm.com",
-    role: "Admin",
+    role: "Admin (Executive)",
   };
 
   return (
@@ -40,12 +41,18 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           onMenuClick={() => setMobileOpen(true)}
           user={user}
         />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          <div className="mx-auto max-w-7xl">
+        <main className="flex-1 overflow-y-auto p-3.5 sm:p-6 lg:p-8 pb-24 lg:pb-8">
+          <div className="mx-auto max-w-7xl animate-fade-in">
             {children}
           </div>
         </main>
       </div>
+
+      {/* Mobile bottom navigation bar (< lg) */}
+      <MobileBottomBar
+        section="admin"
+        onMenuClick={() => setMobileOpen(true)}
+      />
 
       <Toaster position="top-right" richColors closeButton />
     </div>

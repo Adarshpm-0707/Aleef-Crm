@@ -222,13 +222,13 @@ export function DataTable<T extends object>({
       ) : (
         <>
           {/* ── TABLE (md+) ── */}
-          <div className="hidden overflow-x-auto rounded-xl border border-border md:block">
+          <div className="hidden overflow-x-auto rounded-2xl border border-border/70 bg-card shadow-xs md:block">
             <table
               role="grid"
               aria-label="Data table"
-              className="min-w-full divide-y divide-border text-sm"
+              className="min-w-full divide-y divide-border/60 text-sm"
             >
-              <thead className="bg-muted/50">
+              <thead className="bg-muted/40">
                 <tr>
                   {columns.map((col) => (
                     <th
@@ -242,7 +242,7 @@ export function DataTable<T extends object>({
                           : "none"
                       }
                       className={cn(
-                        "whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground",
+                        "whitespace-nowrap px-4 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground",
                         col.sortable && "cursor-pointer select-none hover:text-foreground",
                         col.className,
                       )}
@@ -264,7 +264,7 @@ export function DataTable<T extends object>({
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border bg-card">
+              <tbody className="divide-y divide-border/40 bg-card">
                 {paginated.map((row, ri) => {
                   const key = String(row[rowKey] ?? ri);
                   return (
@@ -286,7 +286,7 @@ export function DataTable<T extends object>({
                       {columns.map((col) => (
                         <td
                           key={col.key}
-                          className={cn("px-4 py-3 text-sm text-foreground", col.className)}
+                          className={cn("px-4 py-3.5 text-sm text-foreground", col.className)}
                         >
                           {col.cell
                             ? col.cell(row, ri)
@@ -316,8 +316,8 @@ export function DataTable<T extends object>({
                       : undefined
                   }
                   className={cn(
-                    "rounded-xl border border-border bg-card p-4 shadow-card",
-                    onRowClick && "cursor-pointer hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "rounded-2xl border border-border/70 bg-card p-4 shadow-xs",
+                    onRowClick && "cursor-pointer hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   )}
                 >
                   {columns

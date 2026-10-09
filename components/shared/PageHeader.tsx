@@ -4,6 +4,7 @@
  */
 
 import React from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export interface BreadcrumbItem {
@@ -38,16 +39,16 @@ export function PageHeader({
         {/* Breadcrumbs */}
         {breadcrumbs && breadcrumbs.length > 0 && (
           <nav aria-label="Breadcrumb">
-            <ol className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+            <ol className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground mb-1">
               {breadcrumbs.map((crumb, i) => (
-                <li key={i} className="flex items-center gap-1">
+                <li key={i} className="flex items-center gap-1.5">
                   {i > 0 && (
                     <svg
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                       fill="currentColor"
-                      className="h-3 w-3 flex-shrink-0"
+                      className="h-3 w-3 flex-shrink-0 opacity-40"
                     >
                       <path
                         fillRule="evenodd"
@@ -57,12 +58,12 @@ export function PageHeader({
                     </svg>
                   )}
                   {crumb.href ? (
-                    <a
+                    <Link
                       href={crumb.href}
-                      className="hover:text-foreground transition-colors"
+                      className="hover:text-foreground transition-colors font-medium"
                     >
                       {crumb.label}
-                    </a>
+                    </Link>
                   ) : (
                     <span
                       aria-current={i === breadcrumbs.length - 1 ? "page" : undefined}

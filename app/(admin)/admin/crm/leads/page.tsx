@@ -201,7 +201,7 @@ export default function AdminLeadsPage() {
     { key: "contact_name", header: "Contact Person" },
     { key: "contact_email", header: "Email" },
     { key: "contact_phone", header: "Phone" },
-    { key: "lead_value", header: "Value (SAR)" },
+    { key: "lead_value", header: "Value (₹)" },
     { key: "status", header: "Stage" },
     { key: "owner", header: "Owner" },
     { key: "follow_up_date", header: "Next Follow-up" },
@@ -247,11 +247,11 @@ export default function AdminLeadsPage() {
     },
     {
       key: "lead_value",
-      header: "Est. Value (SAR)",
+      header: "Est. Value (₹)",
       sortable: true,
       cell: (row) => (
         <span className="font-bold text-teal-600 dark:text-teal-400">
-          SAR {(row.lead_value || 0).toLocaleString()}
+          ₹ {(row.lead_value || 0).toLocaleString("en-IN")}
         </span>
       ),
     },
@@ -353,7 +353,7 @@ export default function AdminLeadsPage() {
         <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
           <span className="text-xs font-medium text-muted-foreground">Total Pipeline Value</span>
           <p className="mt-1 text-2xl font-bold text-foreground">
-            SAR {totalPipelineValue.toLocaleString()}
+            ₹ {totalPipelineValue.toLocaleString("en-IN")}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
@@ -465,7 +465,7 @@ export default function AdminLeadsPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="new-lead-value" className="text-xs font-medium text-foreground">Est. Value (SAR)</label>
+                  <label htmlFor="new-lead-value" className="text-xs font-medium text-foreground">Est. Value (₹)</label>
                   <input
                     id="new-lead-value"
                     type="number"
@@ -602,7 +602,7 @@ export default function AdminLeadsPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="edit-lead-value-input" className="text-xs font-medium text-foreground">Est. Value (SAR)</label>
+                  <label htmlFor="edit-lead-value-input" className="text-xs font-medium text-foreground">Est. Value (₹)</label>
                   <input
                     id="edit-lead-value-input"
                     type="number"

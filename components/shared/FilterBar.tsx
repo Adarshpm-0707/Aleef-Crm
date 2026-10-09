@@ -144,7 +144,7 @@ export function FilterBar({
       role="search"
       aria-label="Filter controls"
       className={cn(
-        "flex flex-wrap items-end gap-3 rounded-xl border border-border bg-card p-4",
+        "flex flex-wrap items-end gap-3 rounded-2xl border border-border/70 bg-card/95 p-4 shadow-xs",
         className,
       )}
     >
